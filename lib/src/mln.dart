@@ -8,11 +8,11 @@ class Mln {
   static const baseUrl = "http://localhost:8000";
   static const rewardUrl = "$baseUrl/api/robot-chronicles/reward";
 
-  static Future<void> grantReward(AccessToken accessToken, int rewardID) async {
+  static Future<bool> grantReward(AccessToken accessToken, int rewardID) async {
     final body = {
       "api_token": apiToken,
       "access_token": accessToken.value,
-      "reward": rewardID,
+      "award": rewardID,
     };
     final response = await post(
       Uri.parse(rewardUrl),
@@ -20,6 +20,8 @@ class Mln {
     );
     if (response.statusCode != 200) {
       print("Something went wrong: ${response.statusCode} ${response.body}");
+      return false;
     }
+    return true;
   }
 }

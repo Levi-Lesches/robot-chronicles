@@ -23,7 +23,11 @@ Future<Response> loginHandler(Request request) async {
   }
   final pendingReward = pendingRankAwards[sessionID];
   print("Found pending reward: $pendingReward");
-  if (pendingReward != null) await Mln.grantReward(accessToken, pendingReward);
+  if (pendingReward != null) {
+    final success = await Mln.grantReward(accessToken, pendingReward);
+    if (success) pendingRankAwards.remove(sessionID);
+  }
+
   return Response.found("/");
 }
 
