@@ -1,11 +1,40 @@
-import "dart:convert";
-import "package:xor_encryption/xor_encryption.dart";
+import "dart:io";
 
-final key = "13bv9cyruhnflksjhtf+p1q";
-final cipher = XorCipher();
+import "package:collection/collection.dart";
+import "package:shelf/shelf.dart";
+import "package:xor_dart/xor_dart.dart";
 
-String decrypt(String source) {
-  final decoded = String.fromCharCodes(base64.decode(source));
-  final decrypted = cipher.encryptData(decoded, key);
-  return decrypted;
+import "oauth.dart";
+
+const key = "13bv9cyruhnflksjhtf+p1q";
+
+String decrypt(String source) => CipherXor.xorFromBase64(source, key);
+String encrypt(String source) => CipherXor.xorToBase64(source, key);
+
+typedef Json = Map<String, dynamic>;
+
+extension RequestUtils on Request {
+  List<Cookie> get cookies {
+    final header = headers[HttpHeaders.cookieHeader];
+    if (header == null) return [];
+    final result = <Cookie>[];
+    for (final rawCookie in header.split("; ")) {
+      final [name, value] = rawCookie.split("=");
+      final cookie = Cookie(name, value);
+      result.add(cookie);
+    }
+    return result;
+  }
+
+  SessionID? get sessionID {
+    final result = cookies.firstWhereOrNull((cookie) => cookie.name == "sessionid")?.value;
+    if (result == null) return null;
+    return SessionID(result);
+  }
+}
+
+extension ResponseUtils on Response {
+  Response setCookie(Cookie cookie) => change(
+    headers: {HttpHeaders.setCookieHeader: cookie.toString()},
+  );
 }
