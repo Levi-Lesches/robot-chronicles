@@ -1,20 +1,88 @@
+# The Robot Chronicles
+
+A server to provide the Flash files and My Lego Network integration for
+The Robot Chronicles, an old Flash-based game by LEGO®.
+
+> [!Note]
+> LEGOⓇ is a trademark of the LEGO Group. The LEGO Group is not affiliated with 
+> this project or its maintainers, has not endorsed or authorized its operation,
+> and is not liable for any safety issues in relation to its operation.
+>
+> No profit is being derived from this project, it is simply a restoration for
+> restoration's sake, to enable players to play the games they grew up with.
+>
+> The operation of this project follows existing precedents and guidelines set
+> by the LEGO Group (and other organizations) in relation to fan projects and
+> abandonware (including the existance of other such projects). Should any
+> party with claim to the intillectual property used in this project have issue
+> with its operation, please contact us immediately and we will take action as
+> soon as possible to resolve, or ultimately remove this project if necessary.
+
 ## SWF modifications
 1. `TheRobotChronicles.swf`, scripts/frame 201, DoAction [18]:
-   In `kv_v.lc = function() {}`, comment out this line:
-```actionscript
-kv_v.l_mcl.loadClip(_loc1_,kv_v.t_mc);
+   In `kv_v.lc = function() {}`, comment out this line to disable tracking:
+```diff
+- kv_v.l_mcl.loadClip(_loc1_,kv_v.t_mc);
++ // kv_v.l_mcl.loadClip(_loc1_,kv_v.t_mc);
 ```
-2. `scripts/frame 201`, `DoAction [10]`:
-```actionscript
-p.maxSpeed = 10  // from 30
+
+2. `scripts/frame_201`, `DoAction [42]`: Lowered the max speed
+```diff
+this.setMechanics = function(speed, acceleration, grip, steering, offroad) {
+-   this.speedMax = (speed + 1) * 1.25;
++   this.speedMax = (speed + 1) * 1.25 * 0.75;
 ```
-3. `scripts/frame 201`, `DoAction [38]`:
-```actionscript
-this.speedActual = Math.round(Math.sqrt(this.vx * this.vx + this.vy * this.vy));
-this.speedPerc = Math.abs(Math.min(1,this.speedActual / this.mechanics.speedMax));
-if(this.isPlayer) {  // <-- added this
-   this.speedActual *= 0.1;
+
+3. `scripts/frame_201`, `DoAction [42]`: Lowered the skid effect
+```diff
+if(this.control.LEFT) {
+-  this.roll -= 2;
++  this.roll -= 1;
+```
+```diff
+else if(this.control.RIGHT) {
+-   this.roll += 2;
++   this.roll += 1;
+```
+
+4. `scripts/frame_201`, `DoAction [23]`: Enabled `test` as a cheat code
+```diff
+- if(code == "hooloovoo" && dialogue("CHT_allowTM") == "TRUE")
++ if((code == "hooloovoo" || code == "test") && dialogue("CHT_allowTM") == "TRUE")
+```
+
+5. `scripts/frame_201`, `DoAction [47]`: Fixed FPS reporting (only visible in test mode)
+```diff
+this.handle = function() {
++   this.fpsCounter++
+
+...
+
+this.calcFPS = function() {  // replace entire body with below
++   var _loc2_ = getTimer();
++   if(!isNaN(this.nextTimeFps) && _loc2_ < this.nextTimeFps) {
++      return this.fps;
++   }
++   this.nextTimeFps = _loc2_ + 1000;
++   var _loc3_ = this.fpsCounter;
++   this.fpsCounter = 0;
++   this.frameDuration = this.currentTime - this.previousTime;
++   this.previousTime = this.currentTime;
++   this.currentTime = getTimer();
++   return _loc3_;
 }
+```
+
+6. `scripts/frame_201`, `DoAction [47]`: Lock the framerate
+```diff
+this.handle = function() {
++   this.currentTime2 = getTimer();
++   this.frameInterval = 1000 / this.framesPerSecond;
++   if (!isNaN(this.nextTime2) && this.currentTime2 < this.nextTime2) {
++     return undefined;
++   }
++   this.nextTime2 = this.currentTime2 + this.frameInterval;
+    this.fpsCounter++;
 ```
 
 ## POST /undefined/ExecuteAwardgiver
