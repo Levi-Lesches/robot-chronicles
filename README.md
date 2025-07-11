@@ -42,7 +42,7 @@ This server can integrate with an OAuth-enabled My Lego Network server. You'll n
 
 When the "Collect your MLN Reward" button appears in-game, users can press it to send the following payload to this server:
 
-```json
+```js
 // POST /undefined/ExecuteAwardgiver
 {
   "awardCategory": string,
@@ -74,7 +74,7 @@ If the user's session is already associated with an MLN account, a simple 200 re
 
 To send awards in MLN, make the following POST request to MLN's servers with a JSON body:
 
-```json
+```js
 // POST /api/robot-chronicles/award
 {
     "api_token": API_TOKEN,
@@ -95,7 +95,8 @@ This was reverse-engineered by inspecting the Flash code. Some relevant ActionSc
 
 ### Project Structure
 
-- `actionscript/`: Relevant or interesting parts of the original Flash/ActionScript code. For convenience, `actionscript/scripts` has been added to the `.gitignore` so you can dump all the code and explore it in an IDE.
+- `actionscript/`: Relevant or interesting parts of the original Flash/ActionScript code.
+  - For convenience, `actionscript/scripts` has been added to the `.gitignore` so you can dump all the code and explore it in an IDE.
 - `bin/`: Contains the main entrypoint for the server, which sets up the different routes.
 - `lib/`: Contains all the Dart code to handle requests, authentication, and MLN integration.
 - `static/`: Contains all the original Flash files needed to run the game, served as-is by the webserver.
