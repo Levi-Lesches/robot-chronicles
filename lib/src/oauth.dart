@@ -3,9 +3,12 @@ import "dart:convert";
 import "package:uuid/v4.dart";
 import "package:http/http.dart";
 
+import "mln.dart";
+
 // Not checked into the repo
 // Must contain: `String apiToken`
 import "secrets.dart";
+export "secrets.dart";
 
 extension type SessionID(String value) { }
 extension type AccessToken(String value) { }
@@ -15,9 +18,8 @@ class OAuth {
   // Be sure to include `secrets.dart` for the secret API token.
   static const clientID = "8203164e-4cd0-48ce-833d-2a9cefe3f8b8";
 
-  static const mlnBase = "http://localhost:8000";
-  static const oauthUrl = "$mlnBase/oauth";
-  static const tokenUrl = "$mlnBase/oauth/token";
+  static const oauthUrl = "${Mln.baseUrl}/oauth";
+  static const tokenUrl = "${Mln.baseUrl}/oauth/token";
   static const robotChroniclesBase = "http://localhost:7000";
   static const loginUrl = "$robotChroniclesBase/api/login";
 
