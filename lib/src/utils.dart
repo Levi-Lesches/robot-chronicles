@@ -38,3 +38,13 @@ extension ResponseUtils on Response {
     headers: {HttpHeaders.setCookieHeader: cookie.toString()},
   );
 }
+
+Future<T?> safelyAsync<T>(Future<T> Function() func) async {
+  try {
+    return await func();
+  // Need to catch all possible errors here
+  // ignore: avoid_catches_without_on_clauses
+  } catch (error) {
+    return null;
+  }
+}

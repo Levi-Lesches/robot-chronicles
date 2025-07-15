@@ -77,9 +77,9 @@ To send awards in MLN, make the following POST request to MLN's servers with a J
 ```js
 // POST /api/robot-chronicles/award
 {
-    "api_token": API_TOKEN,
-    "access_token": ACCESS_TOKEN,
-    "award": int,  // 1-5, inclusive
+  "api_token": API_TOKEN,
+  "access_token": ACCESS_TOKEN,
+  "award": int,  // 1-5, inclusive
 }
 ```
 
@@ -92,6 +92,19 @@ Where `API_TOKEN` and `ACCESS_TOKEN` are replaced with their appropriate values.
 5. The Fall of the Robot
 
 This was reverse-engineered by inspecting the Flash code. Some relevant ActionScript snippets have been categorized in the `actionscript/` directory
+
+There seems to have been a way to get the client to load arbitrary rewards from MLN. Just add the following to your response:
+```xml
+<result status="200">
+  <message ...>
+  <items>
+    <item thumbnail="flash_file.swf"/>
+    <!-- More items... -->
+  </items>
+</result>
+```
+
+This will cause the client to download and execute any SWF file you provide. However, the original files were not archived and so this feature is not implemented.
 
 ### Project Structure
 

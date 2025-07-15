@@ -21,8 +21,6 @@ Future<int> parseAwardID(Request request) async {
   return awardID;
 }
 
-final items = ["stud", "stud"];
-
 String getLoginXml(SessionID sessionID) {
   final builder = XmlBuilder();
   final loginUrl = OAuth.getLoginUri(sessionID);
@@ -32,11 +30,6 @@ String getLoginXml(SessionID sessionID) {
       "text": "We have revived MLN! Please sign in here first",
       "link": loginUrl.toString(),
       "buttonText": "Sign in",
-    });
-    builder.element("items", nest: () {
-      for (final item in items) {
-        builder.element("item", attributes: {"thumbnail": item});
-      }
     });
   });
   return builder.buildDocument().toXmlString();

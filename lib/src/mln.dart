@@ -6,7 +6,7 @@ import "oauth.dart";
 
 class Mln {
   static const baseUrl = "http://localhost:8000";
-  static const rewardUrl = "$baseUrl/api/robot-chronicles/reward";
+  static const rewardUrl = "$baseUrl/api/robot-chronicles/award";
 
   static Future<bool> grantReward(AccessToken accessToken, int rewardID) async {
     final body = {

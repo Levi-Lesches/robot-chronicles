@@ -16,7 +16,7 @@ Future<Response> loginHandler(Request request) async {
   if (sessionID == null || authCode == null) {
     return Response.badRequest(body: "Missing session_id or auth_code, please try again");
   }
-  final accessToken = await OAuth.login(sessionID, authCode);
+  final accessToken = await safelyAsync(() => OAuth.login(sessionID, authCode));
   print("Signed user in with access token: $accessToken");
   if (accessToken == null) {
     return Response.internalServerError(body: "Could not sign in");
@@ -24,8 +24,8 @@ Future<Response> loginHandler(Request request) async {
   final pendingReward = pendingRankAwards[sessionID];
   print("Found pending reward: $pendingReward");
   if (pendingReward != null) {
-    final success = await Mln.grantReward(accessToken, pendingReward);
-    if (success) pendingRankAwards.remove(sessionID);
+    final success = await safelyAsync(() => Mln.grantReward(accessToken, pendingReward));
+    if (success ?? false) pendingRankAwards.remove(sessionID);
   }
 
   return Response.found("/");
@@ -47,7 +47,7 @@ Future<Response> handleAwards(Request request) async {
     final encrypted = encrypt(loginXml);
     return Response.ok(encrypted);
   } else {
-    await Mln.grantReward(accessToken, awardID);
+    await safelyAsync(() => Mln.grantReward(accessToken, awardID));
     return Response.ok(null);
   }
 }
